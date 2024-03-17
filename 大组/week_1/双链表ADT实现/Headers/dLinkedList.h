@@ -1,7 +1,7 @@
 //创建链表 
-slist *sLink_create(slist *head){		
+dlist *dLink_create(dlist *head){		
 	int i, n=5;		//设置循环条件 
-	slist *p = head, *q;
+	dlist *p = head, *q;
 	
 	if (head==NULL){	//判断是否创建头结点有误 
 		printf("创建失败！"); 
@@ -13,15 +13,16 @@ slist *sLink_create(slist *head){
 		if(i==1){
 			head->num = i;
 		} else {
-			q = (slist *)malloc(sizeof(slist));
+			q = (dlist *)malloc(sizeof(dlist));
 			p->next = q;
+			q->prior = p;
 			p = q;
 			p->num = i;
 			p->next = NULL;
 		}
 	}
 	
-	printf("有序单向链表构建完成，现在进行展示...\n");
+	printf("有序双向链表构建完成，现在进行展示...\n");
 	p = head;
 	while(p!=NULL){
 		printf("%d ", p->num);
@@ -31,10 +32,10 @@ slist *sLink_create(slist *head){
 }
 
 //插入结点
-slist *sLink_insert(slist *head, int pos, int num){
+dlist *dLink_insert(dlist *head, int pos, int num){
 	int i,n=0;	//用来判断链表长度 
-	slist vhead; vhead.next=head;	//构建虚拟头结点 
-	slist *p = head, *q;
+	dlist vhead; vhead.next=head; vhead.prior=NULL;	//构建虚拟头结点 
+	dlist *p = head, *q;
 	while(p!=NULL){
 		n++;
 		p=p->next;
@@ -50,10 +51,14 @@ slist *sLink_insert(slist *head, int pos, int num){
 	for(i=1; i<pos; i++){
 		p=p->next;
 	}
-	q = (slist *)malloc(sizeof(slist));
+	q = (dlist *)malloc(sizeof(dlist));
 	q->num = num;
 	q->next = p->next;
 	p->next = q;
+	q->prior = p;
+	p = q;
+	q = q->next;
+	q->prior = p;
 	
 	printf("结点插入完成，现在进行展示...\n");
 	p = head;
@@ -61,14 +66,14 @@ slist *sLink_insert(slist *head, int pos, int num){
 		printf("%d ", p->num);
 		p = p->next;
 	}
-	return head;
+	return vhead.next;
 }
 
 //删除结点
-slist *sLink_delete(slist *head, int pos){
+dlist *dLink_delete(dlist *head, int pos){
 	int i,n=0;	//用来判断链表长度 
-	slist vhead; vhead.next=head;	//构建虚拟头结点 
-	slist *p = head, *q;
+	dlist vhead; vhead.next=head;	//构建虚拟头结点 
+	dlist *p = head, *q, *t;
 	while(p!=NULL){
 		n++;
 		p=p->next;
@@ -85,7 +90,9 @@ slist *sLink_delete(slist *head, int pos){
 		p=p->next;
 	}
 	q = p->next;
+	t = q->next;
 	p->next = q->next;
+	t->prior = q->prior;
 	free(q);
 
 	printf("结点删除完成，现在进行展示...\n");
@@ -98,10 +105,10 @@ slist *sLink_delete(slist *head, int pos){
 } 
 
 //更新结点
-slist *sLink_reset(slist *head, int pos, int num){
+dlist *dLink_reset(dlist *head, int pos, int num){
 	int i,n=0;	//用来判断链表长度 
-	slist vhead; vhead.next=head;	//构建虚拟头结点 
-	slist *p = head, *q;
+	dlist vhead; vhead.next=head;	//构建虚拟头结点 
+	dlist *p = head, *q;
 	while(p!=NULL){
 		n++;
 		p=p->next;
@@ -129,10 +136,10 @@ slist *sLink_reset(slist *head, int pos, int num){
 } 
 
 //结点查询 
-void sLink_check(slist *head, int pos){
+void dLink_check(dlist *head, int pos){
 	int i,n=0;	//用来判断链表长度 
-	slist vhead; vhead.next=head;	//构建虚拟头结点 
-	slist *p = head;
+	dlist vhead; vhead.next=head;	//构建虚拟头结点 
+	dlist *p = head;
 	while(p!=NULL){
 		n++;
 		p=p->next;
@@ -151,21 +158,3 @@ void sLink_check(slist *head, int pos){
 	printf("该位置的数据值为%d", p->num); 
 }
 
-//寻找中点
-void sLink_mid(slist *head){
-	int i,n=0;	//用来判断链表长度 
-	slist *p = head, *q;
-	while(p!=NULL){
-		n++;
-		p=p->next;
-	}
-	if(n%2==0){
-		printf("链表结点个数为偶数，没有中间结点");
-		return;
-	}
-	p = head;
-	for(i=0; i<n/2; i++){
-		p = p->next;
-	}
-	printf("中间结点的数据值为%d", p->num);
-} 

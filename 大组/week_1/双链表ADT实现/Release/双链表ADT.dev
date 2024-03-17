@@ -51,7 +51,7 @@ AutoIncBuildNr=0
 SyncProduct=1
 
 [Unit1]
-FileName=double_link_list.c
+FileName=..\Headers\dLinkedList.h
 CompileCpp=0
 Folder=
 Compile=1
@@ -61,7 +61,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-FileName=dLinkedList.h
+FileName=..\Sources\double_link_list.c
 CompileCpp=0
 Folder=
 Compile=1
